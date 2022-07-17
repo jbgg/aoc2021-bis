@@ -3,7 +3,7 @@
 
 extern char _input[];
 
-#define N (10)
+#define N (100)
 #define NN (5*N)
 
 int64_t _input2[NN][NN];
