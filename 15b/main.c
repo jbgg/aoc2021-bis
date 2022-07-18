@@ -4,7 +4,7 @@
 
 extern char _input[];
 
-#define N (100)
+#define N (10)
 #define NN (5*N)
 
 typedef struct {
@@ -115,14 +115,33 @@ int main(int argc, char *argv[]){
 
 	create_nodes();
 
-	B_insert(0,0,5);
-	B_insert(1,0,2);
-	B_insert(2,1,3);
-	B_insert(0,0,3);
+	/* Dijkstra's algorithm from the paper:
+Dijkstra, E. W. (1959). "A note on two problems in connexion with graphs". Numerische Mathematik. 1: 269–271.
+	Notes:
+		we only need the length of the shortest path
+		so the II set is not saved, only the B set
+	*/
+	node_t *last;
+	int i;
+	int j;
 
-	B_delete_raw(B_head);
+	last = &nodes[0][0];
+	last->min = 0;
+	while(last != &nodes[NN-1][NN-1]){
+		i = last->i;
+		j = last->j;
+		/* Step 1. */
+		B_insert(i-1, j, last->min);
+		B_insert(i+1, j, last->min);
+		B_insert(i, j-1, last->min);
+		B_insert(i, j+1, last->min);
+		/* Step 2. */
+		last = B_head->node_p;
+		B_delete_raw(B_head);
+		last->min = last->cur;
+	}
 
-	B_print();
+	printf("%d\n", nodes[NN-1][NN-1].min);
 
 	return 0;
 }
@@ -167,7 +186,6 @@ void B_insert(int i, int j, int minc){
 	newcur = minc + node_p->v;
 
 	if(node_p->cur == -1){
-		printf("[%d][%d] cur=-1, newcur=%d\n", node_p->i, node_p->j, newcur);
 		node_p->cur = newcur;
 		B_t *B_p = malloc(sizeof(B_p));
 		node_p->B_p = B_p;
@@ -175,7 +193,6 @@ void B_insert(int i, int j, int minc){
 		B_p->next_p = NULL;
 		B_insert_raw(B_p);
 	}else if(newcur < node_p->cur){
-		printf("[%d][%d] cur=%d, newcur=%d\n", node_p->i, node_p->j, node_p->cur, newcur);
 		B_delete_raw(node_p->B_p);
 		node_p->cur = newcur;
 		B_insert_raw(node_p->B_p);
