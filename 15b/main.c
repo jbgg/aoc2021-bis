@@ -16,7 +16,7 @@ typedef struct {
 	/* min is the minimal distance from [0][0] when the node belongs to A set
 	otherwise it's value is -1 */
 	int min;
-	/* cur is the current minimal distance from [0][0] when the node belongs to B set
+	/* cur is the current minimal distance from [0][0] when the node belongs to B (or A) set
 	otherwise it's value is -1 */
 	int cur;
 	/* B_t* pointer to corresponding B_t */
